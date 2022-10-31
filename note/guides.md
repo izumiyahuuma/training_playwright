@@ -17,3 +17,10 @@ PLAYWRIGHT_BROWSERS_PATH=$HOME/pw-browsers python playwright_script.py
 ```
 
 # Pages
+https://playwright.dev/python/docs/pages
+
+BrowserContextからpageを生成することも可能。  
+(TODO Browserから作る場合とBrowserContextから作る場合で何が違うのだろう?)
+
+## Multiple pages
+複数ページを持つことが可能(いわゆるタブを作るイメージ)  
