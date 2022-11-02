@@ -4,7 +4,6 @@ http://abehiroshi.la.coocan.jp/
 """
 
 from playwright.sync_api import sync_playwright, Browser, Page
-from pprint import pprint
 
 with sync_playwright() as p:
     browser: Browser = p.chromium.launch(headless=False)
