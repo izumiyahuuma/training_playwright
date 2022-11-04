@@ -18,22 +18,24 @@ class BasePage:
         self.__page.wait_for_load_state()
         self.__page.wait_for_timeout(self.__options.get('timeout', 1000))
 
-    def click_to_navigate(self, selector: str):
-        self.click(selector)
+    def click_to_navigate(self, xpath: str):
+        self.click(xpath)
         self.__page.wait_for_load_state()
         self.__page.wait_for_timeout(self.__options.get('timeout', 1000))
 
-    def fetch_option_values(self, selector: str) -> list[str]:
-        options: Locator = self.__page.locator(selector)
+    def fetch_option_values(self, xpath: str) -> list[str]:
+        options: Locator = self.__page.locator(xpath)
         values: list[str] = [options.nth(i).get_attribute('value') for i in range(options.count())]
-        values.remove('')
         return values
 
-    def select(self, select_box_selector: str, option_value: str):
-        self.__page.locator(select_box_selector).select_option(value=option_value)
+    def select(self, xpath: str, option_value: str):
+        self.__page.locator(xpath).select_option(value=option_value)
 
-    def click(self, selector: str):
-        self.__page.click(selector)
+    def click(self, xpath: str):
+        self.__page.click(xpath)
+
+    def find_all(self, xpath: str) -> Locator:
+        return self.__page.locator(xpath)
 
 
 class BaseBrowser:
