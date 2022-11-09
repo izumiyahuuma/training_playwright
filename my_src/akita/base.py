@@ -1,9 +1,31 @@
 from playwright.sync_api import Browser, Page, Locator
 
 
+class BaseLocator:
+    """
+    playwrightのLocatorのラッパー
+    """
+    __locator: Locator
+
+    def __init__(self, locator: Locator):
+        self.__locator = locator
+
+    def text(self, **kwargs) -> str:
+        xpath: str = kwargs.get('xpath')
+        if xpath:
+            return self.__locator.locator(xpath).inner_text()
+        return self.__locator.inner_text()
+
+    def count(self) -> int:
+        return self.__locator.count()
+
+    def nth(self, i: int) -> 'BaseLocator':
+        return BaseLocator(self.__locator.nth(i))
+
+
 class BasePage:
     """
-    playwrightのPageクラスのラッパー
+    playwrightのPageのラッパー
     """
 
     __page: Page
@@ -34,13 +56,14 @@ class BasePage:
     def click(self, xpath: str):
         self.__page.click(xpath)
 
-    def find_all(self, xpath: str) -> Locator:
-        return self.__page.locator(xpath)
+    def find_all(self, xpath: str) -> BaseLocator:
+        locator = BaseLocator(self.__page.locator(xpath))
+        return locator
 
 
 class BaseBrowser:
     """
-    playwrightのBrowserクラスのラッパー
+    playwrightのBrowserのラッパー
     """
     __browser: Browser
 

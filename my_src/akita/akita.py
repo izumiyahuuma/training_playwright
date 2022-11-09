@@ -11,6 +11,7 @@ def main(play_wright: Playwright):
     options: list[str] = page.fetch_option_values(
         '//html/body/div/form/table[3]/tbody/tr[2]/td/table/tbody/tr[8]/td[2]/select/option')
     options.remove('')  # 入札執行課所が「指定しない」は今回対象外
+    options = [options[2]]  # TODO 開発のため一つだけに絞って動かしてるのであとで消す
     for option in options:
         page.select('//html/body/div/form/table[3]/tbody/tr[2]/td/table/tbody/tr[8]/td[2]/select', option)
         page.click_to_navigate('//html/body/div/form/table[3]/tbody/tr[2]/td/a/img')
@@ -18,7 +19,16 @@ def main(play_wright: Playwright):
 
 
 def crawl_search_list(browser: BaseBrowser, page: BasePage):
-    pass
+    result_label: str = page.find_all(
+        '//html/body/div/form/table[4]/tbody/tr[1]/td/table/tbody/tr/td[1]').text()
+    if 'ヒットしました' not in result_label:
+        print('データなし')  # TODO dictとかで返して呼び出し元に表示させたい
+        return
+
+    rows: BaseLocator = page.find_all('//html/body/div/form/table[4]/tbody/tr[2]/td/table/tbody/tr')
+    for i in range(1, rows.count()):  # 1行目はヘッダなので除外
+        row = rows.nth(i)
+        print(row.text(**{'xpath': '//td[1]'}))
 
 
 if __name__ == '__main__':
