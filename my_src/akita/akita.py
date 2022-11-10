@@ -3,8 +3,8 @@ from base import *
 
 
 def main(play_wright: Playwright):
-    browser = BaseBrowser(browser=play_wright.chromium.launch(headless=False))
-    page = browser.new_page(options={})
+    browser = BaseBrowser(browser=play_wright.chromium.launch(headless=False), options={})
+    page = browser.new_page()
     page.navigate('http://cals05.pref.akita.lg.jp/ecydeen/do/PPI/koukoku')
 
     # NOTE: 普通に一括検索できるけど、勉強なので入札執行課所毎に検索していく。
@@ -48,13 +48,19 @@ def crawl_search_list(browser: BaseBrowser, page: BasePage):
         }
         print(main_data)
 
-    # row: BaseLocator = rows.nth(1)
-    # row.click('//td[3]/a')
-    # page.wait()
+    row: BaseLocator = rows.nth(1)
+    detail_page: BasePage = row.click_to_navigate_new_tab('//td[3]/a', browser)
+    detail_data = crawl_detail_page(browser, detail_page)
+    print(detail_data)
+
+    detail_page.close()
+    page._wait()
 
 
 def crawl_detail_page(browser: BaseBrowser, page: BasePage):
-    pass
+    return {
+        'title': page.find_all('//html/body/form/div/table[2]/tbody/tr[2]/th/font').text()
+    }
 
 
 if __name__ == '__main__':
