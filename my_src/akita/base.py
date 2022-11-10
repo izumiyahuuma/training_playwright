@@ -22,6 +22,14 @@ class BaseLocator:
     def nth(self, i: int) -> 'BaseLocator':
         return BaseLocator(self.__locator.nth(i))
 
+    def click_to_navigate_new_tab(self, xpath: str, browser: Browser) -> 'BasePage':
+        context = browser.new_context()
+        with context.expect_page() as new_page_info:
+            self.__locator.locator(xpath).click()
+        new_page = new_page_info.value
+        new_page.wait_for_load_state()
+        return BasePage(new_page, {})
+
 
 class BasePage:
     """
