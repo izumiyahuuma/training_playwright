@@ -1,4 +1,7 @@
-from playwright.sync_api import Browser, Page, Locator
+import os.path
+from uuid import uuid4
+
+from playwright.sync_api import Browser, Page, Locator, Download
 
 
 class BaseLocator:
@@ -28,7 +31,6 @@ class BaseLocator:
             self.__locator.locator(xpath).click()
         new_page = new_page_info.value
         new_page.wait_for_load_state()
-        print(len(browser.contexts()))
         return browser.new_page(**{'page': new_page})
 
 
@@ -61,6 +63,18 @@ class BasePage:
 
     def select(self, xpath: str, option_value: str):
         self.__page.locator(xpath).select_option(value=option_value)
+
+    def click_to_download(self, xpath: str, save_dir: str):
+        with self.__page.expect_download() as download_info:
+            self.__page.click(xpath)
+        download: Download = download_info.value
+        file_name = download.suggested_filename
+        uuid = uuid4()
+        # ファイル名に変更加えない方が本来のクローリング的には正しい気がしつつ、ディレクトリきるのめんどいからファイル名にくっつけちゃう
+        save_path = f'{save_dir}/{uuid}_{file_name}'
+        download.save_as(save_path)
+        self._wait()
+        return save_path
 
     def click(self, xpath: str):
         self.__page.click(xpath)
