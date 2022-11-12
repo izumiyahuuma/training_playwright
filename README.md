@@ -17,7 +17,7 @@ pipenv shell
 cd my_src/abehiroshi
 python abehiroshi.py
 
-# 秋田県庁の入札サイトクローリング
+# 秋田県庁の入札サイトクローリング(/tmp/crawl配下に公告ファイルがダウンロードされる)
 cd my_src/akita
 python akita.py
 
